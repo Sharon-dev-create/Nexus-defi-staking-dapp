@@ -28,21 +28,7 @@ import {
   protocolMetrics,
   transactions,
 } from "./data/mockData";
-import { getBrowserProvider, requestAccounts } from "./lib/ethStaking";
-
-const [wallet, setWallet] = useState<string | null>(null);
-
-async function connectWallet() {
-  const provider = getBrowserProvider();
-
-  if (!provider) {
-    alert("MetaMask not found");
-    return;
-  }
-
-  const accounts = await requestAccounts(provider);
-  setWallet(accounts[0]);
-}                
+// import { getBrowserProvider, requestAccounts } from "./lib/ethStaking";        
 
 const navLinks = ["Home", "Stake", "Dashboard", "Analytics", "Docs"];
 const walletAddress = "0x7a62b8d2914d59c3fd51a90d7e2fb839508c431e";
