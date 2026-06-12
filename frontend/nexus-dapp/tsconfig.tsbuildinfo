@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/Button.tsx","./src/components/ChartCard.tsx","./src/components/GlassCard.tsx","./src/components/MetricCard.tsx","./src/data/mockData.ts","./src/hooks/useStakingDapp.ts","./src/lib/ethStaking.ts"],"errors":true,"version":"5.9.3"}
