@@ -47,8 +47,9 @@ function SectionHeader({ eyebrow, title, copy }: { eyebrow: string; title: strin
   );
 }
 
-function Navigation({ walletConnected, walletAddress, onConnect }: { walletConnected: boolean;
-  walletAddress?: string; onConnect: () => void }) {
+function Navigation({ walletConnected, walletAddress, onConnect }:
+   { walletConnected: boolean; walletAddress?: string; onConnect: () => Promise<void> })
+    {
   const [open, setOpen] = useState(false);
 
   return (
@@ -272,7 +273,7 @@ function StakingDashboard() {
 
           <div id="dashboard" className="mt-8 grid gap-6 lg:grid-cols-12">
             <div className="lg:col-span-5">
-              <GlassCard className="h-full">
+              <GlassCard className="h-full overflow-visible">
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="text-2xl font-semibold text-text-primary">Stake Assets</h3>
                   <span className="rounded-full border border-primary-electric/30 bg-primary-interactive/10 px-3 py-1 font-mono text-xs text-primary-electric">
@@ -283,7 +284,7 @@ function StakingDashboard() {
                   <label className="block">
                     <span className="text-sm font-medium text-text-secondary">Token</span>
 
-                  <div className="relative mt-2">
+                  <div className="relative z-50 mt-2">
                     <button
                       type="button"
                       onClick={() => setShowNetworks(!showNetworks)}
@@ -291,13 +292,37 @@ function StakingDashboard() {
                     >
                       <span className="flex items-center gap-3">
                         <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-electric text-sm font-bold text-background">
-                          {selectedNetNetwork.symbol}
+                          {selectedNetwork.symbol}
                         </span>
-                        Ethereum
+
+                        {selectedNetwork.name}
                       </span>
+                      
                       <ChevronDown className="h-4 w-4 text-text-muted" />
                     </button>
+                    
+                    {showNetworks && (
+                      <div className="absolute left-0 top-full z-[999] mt-2 w-full rounded-2xl border 
+                      border-border-subtle bg-surface-100 shadow-xl overflow-hidden">
+                        {networks.map((network) => (
+                          <button 
+                            key={network.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedNetwork(network);
+                              setShowNetworks(false);
+                            }}
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-white/5"
+                            >
+                            <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-electric text-xs font-bold text-background">
+                            {network.symbol}
+                            </span>
 
+                            {network.name}
+                            </button>
+                        ))}
+                        </div>
+                    )}
                     </div>
 
                   </label>
