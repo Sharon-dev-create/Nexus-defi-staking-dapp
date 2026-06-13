@@ -32,6 +32,8 @@ import { getBrowserProvider, requestAccounts, shortenAddress } from "./lib/ethSt
 
 const navLinks = ["Home", "Stake", "Dashboard", "Analytics", "Docs"];
 
+const SEPOLIA_CHAIN_ID = "";
+
 function SectionHeader({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
   return (
     <div className="mx-auto mb-10 max-w-3xl text-center md:mb-12">
@@ -572,6 +574,24 @@ function DocsSection() {
 function App() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress ] = useState<string>("");
+  const [wallet, setWallet] = useState<string | null>(null);
+  const [chainId, setChainId] = useState<string>("");
+
+  const function switchToSepolia() {
+    if(!window.ethereum) return false;
+
+    try {
+      await window.ethereum.request({
+        methos: "wallet_switchEthereumChain",
+        params: [{ chainId: SEPOLIA_CHAIN_ID}],
+      });
+
+      return true;
+    } catch (error: any) {
+      console.error(error);
+      return false;
+    }
+  }
 
   const connectWallet = async () => {
   try {
