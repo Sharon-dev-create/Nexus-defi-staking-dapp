@@ -28,14 +28,9 @@ import {
   protocolMetrics,
   transactions,
 } from "./data/mockData";
-// import { getBrowserProvider, requestAccounts } from "./lib/ethStaking";        
+import { getBrowserProvider, requestAccounts, shortenAddress } from "./lib/ethStaking";        
 
 const navLinks = ["Home", "Stake", "Dashboard", "Analytics", "Docs"];
-const walletAddress = "0x7a62b8d2914d59c3fd51a90d7e2fb839508c431e";
-
-function shortenAddress(address: string) {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
 
 function SectionHeader({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
   return (
@@ -47,7 +42,8 @@ function SectionHeader({ eyebrow, title, copy }: { eyebrow: string; title: strin
   );
 }
 
-function Navigation({ walletConnected, onConnect }: { walletConnected: boolean; onConnect: () => void }) {
+function Navigation({ walletConnected, walletAddress, onConnect }: { walletConnected: boolean;
+  walletAddress?: string; onConnect: () => void }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -80,7 +76,7 @@ function Navigation({ walletConnected, onConnect }: { walletConnected: boolean; 
         <div className="hidden md:block">
           <Button onClick={onConnect} aria-label="Connect wallet">
             <Wallet className="h-4 w-4" />
-            {walletConnected ? shortenAddress(walletAddress) : "Connect Wallet"}
+            {walletConnected && walletAddress ? shortenAddress(walletAddress) : "Connect Wallet"}
           </Button>
         </div>
 
@@ -115,7 +111,7 @@ function Navigation({ walletConnected, onConnect }: { walletConnected: boolean; 
             ))}
             <Button onClick={onConnect} className="mt-2 w-full">
               <Wallet className="h-4 w-4" />
-              {walletConnected ? shortenAddress(walletAddress) : "Connect Wallet"}
+              {walletConnected && walletAddress ? shortenAddress(walletAddress) : "Connect Wallet"}
             </Button>
           </div>
         </motion.div>
@@ -124,7 +120,7 @@ function Navigation({ walletConnected, onConnect }: { walletConnected: boolean; 
   );
 }
 
-function Hero({ walletConnected, onConnect }: { walletConnected: boolean; onConnect: () => void }) {
+function Hero({ walletConnected, onConnect }: { walletConnected: boolean; onConnect: () => Promise<void>; }) {
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -575,6 +571,30 @@ function DocsSection() {
 
 function App() {
   const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress ] = useState<string>("");
+
+  const connectWallet = async () => {
+  try {
+    const provider = getBrowserProvider();
+
+    if (!provider) {
+      alert("Please install MetaMask")
+      return;
+    }
+
+    const accounts = await requestAccounts(provider);
+
+    if (accounts.length > 0) {
+      setWalletAddress(accounts[0]);
+      setWalletConnected(true);
+    }
+  }
+  catch (error){
+    console.error(error);
+    alert("Wallet connection failed")
+  }
+  };
+
   const securityFacts = useMemo(
     () => [
       "Proof-of-reserve attestations",
@@ -587,9 +607,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-text-primary">
-      <Navigation walletConnected={walletConnected} onConnect={() => setWalletConnected(true)} />
+      <Navigation walletConnected={walletConnected} walletAddress={walletAddress} onConnect={connectWallet} />
       <main>
-        <Hero walletConnected={walletConnected} onConnect={() => setWalletConnected(true)} />
+        <Hero walletConnected={walletConnected} onConnect={connectWallet} />
+
         <section className="px-4 py-8 sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {securityFacts.map((fact, index) => (
