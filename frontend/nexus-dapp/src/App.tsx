@@ -302,7 +302,7 @@ function StakingDashboard() {
                     </button>
                     
                     {showNetworks && (
-                      <div className="absolute left-0 top-full z-[999] mt-2 w-full rounded-2xl border 
+                      <div className="left-0 top-full z-[999] mt-2 w-full rounded-2xl border 
                       border-border-subtle bg-surface-100 shadow-xl overflow-hidden">
                         {networks.map((network) => (
                           <button 
