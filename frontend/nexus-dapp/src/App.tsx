@@ -28,11 +28,14 @@ import {
   protocolMetrics,
   transactions,
 } from "./data/mockData";
-import { getBrowserProvider, requestAccounts, shortenAddress } from "./lib/ethStaking";        
+import { getBrowserProvider, requestAccounts } from "./lib/ethStaking";        
 
 const navLinks = ["Home", "Stake", "Dashboard", "Analytics", "Docs"];
+// const walletAddress = "0x7a62b8d2914d59c3fd51a90d7e2fb839508c431e";
 
-const SEPOLIA_CHAIN_ID = "";
+function shortenAddress(address: string) {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
 
 function SectionHeader({ eyebrow, title, copy }: { eyebrow: string; title: string; copy: string }) {
   return (
@@ -231,6 +234,22 @@ function Hero({ walletConnected, onConnect }: { walletConnected: boolean; onConn
 }
 
 function StakingDashboard() {
+  const networks = [
+    {
+      id: "sepolia",
+    name: "Ethereum Sepolia",
+    symbol: "ETH",
+    chainId: "0xaa36a7",
+  },
+  {
+    id: "mainnet",
+    name: "Ethereum Mainnet",
+    symbol: "ETH",
+    chainId: "0x1",
+  },
+  ]
+  const [selectedNetwork, setSelectedNetwork] = useState(networks[0]);
+  const [showNetworks, setShowNetworks] = useState(false);
   const [autoCompound, setAutoCompound] = useState(true);
   const [stakeAmount, setStakeAmount] = useState("");
   const [unstakeAmount, setUnstakeAmount] = useState("");
@@ -263,18 +282,24 @@ function StakingDashboard() {
                 <form className="mt-6 space-y-5">
                   <label className="block">
                     <span className="text-sm font-medium text-text-secondary">Token</span>
+
+                  <div className="relative mt-2">
                     <button
                       type="button"
+                      onClick={() => setShowNetworks(!showNetworks)}
                       className="mt-2 flex w-full items-center justify-between rounded-2xl border border-border-subtle bg-background/60 px-4 py-4 text-left text-text-primary"
                     >
                       <span className="flex items-center gap-3">
                         <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-electric text-sm font-bold text-background">
-                          ETH
+                          {selectedNetNetwork.symbol}
                         </span>
                         Ethereum
                       </span>
                       <ChevronDown className="h-4 w-4 text-text-muted" />
                     </button>
+
+                    </div>
+
                   </label>
                   <label className="block">
                     <span className="text-sm font-medium text-text-secondary">Amount</span>
@@ -574,24 +599,6 @@ function DocsSection() {
 function App() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress ] = useState<string>("");
-  const [wallet, setWallet] = useState<string | null>(null);
-  const [chainId, setChainId] = useState<string>("");
-
-  const function switchToSepolia() {
-    if(!window.ethereum) return false;
-
-    try {
-      await window.ethereum.request({
-        methos: "wallet_switchEthereumChain",
-        params: [{ chainId: SEPOLIA_CHAIN_ID}],
-      });
-
-      return true;
-    } catch (error: any) {
-      console.error(error);
-      return false;
-    }
-  }
 
   const connectWallet = async () => {
   try {
