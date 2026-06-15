@@ -7,11 +7,8 @@ import {
 import { sepolia } from "viem/chains";
 
 export const CONTRACT_ADDRESS: Address =
-  "0xYourETHStakingContractAddressHere";
+  "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
-/* ------------------------------------------------------------------ */
-/* ABI (trimmed but accurate for app usage)                           */
-/* ------------------------------------------------------------------ */
 
 export const stakingAbi = [
   {
@@ -83,7 +80,6 @@ export const stakingAbi = [
   },
 ] as const;
 
-/* ------------------------------------------------------------------ */
 
 export const publicClient = createPublicClient({
   chain: sepolia,
