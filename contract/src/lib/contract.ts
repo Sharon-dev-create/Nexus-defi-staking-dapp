@@ -7,7 +7,7 @@ import {
 import { sepolia } from "viem/chains";
 
 export const CONTRACT_ADDRESS: Address =
-  "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  "0x6a322bc1D3D3758f1Df4faBe3182B76F449F69C6";
 
 
 export const stakingAbi = [
